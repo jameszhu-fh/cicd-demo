@@ -1,0 +1,49 @@
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "cicd-demo"
+version = "0.1.0"
+description = "Demo project for CICD"
+authors = ["James Zhu <james.zhu@fengheasia.com>"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.12"
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.3.4"
+pytest-cov = "^6.0.0"
+pytest-html = "^4.1.1"
+pytest-mock = "^3.14.0"
+freezegun = "^1.5.1"
+
+[tool.poetry.group.docs.dependencies]
+mkdocs = "^1.6.1"
+
+[tool.poetry.group.github.dependencies]
+pylint = "^3.3.2"
+ruff = "^0.8.3"
+
+[tool.ruff]
+line-length = 100
+exclude = ["tests"]
+extend-include = ["*.ipynb"]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+testpaths = ["tests"]
+
+[tool.coverage.html]
+directory = "report/htmlcov"
+
+[tool.coverage.paths]
+source = ["src/"]

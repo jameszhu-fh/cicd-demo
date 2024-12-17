@@ -1,0 +1,35 @@
+name: CI
+on: push
+
+jobs:
+  ci-demo:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.12"]
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install Poetry
+        run: pip install poetry
+      - name: Load cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v3
+        with:
+          path: .venv
+          key: venv-${{ matrix.python-version }}-${{ hashFiles('**/poetry.lock') }}
+      - name: Install Dependencies
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: poetry install --with test,docs,github
+      - name: Linting
+        run: poetry run pylint ./src
+        continue-on-error: true
+      - name: Static Check
+        run: poetry run ruff check ./src
+      - name: Testing and coverage
+        run: poetry run pytest --html=report/report.html --cov --cov-report=html
+      # TODO: upload report files
